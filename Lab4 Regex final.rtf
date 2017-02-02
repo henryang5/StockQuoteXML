@@ -1,0 +1,349 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
+{\fonttbl\f0\fnil\fcharset0 Menlo-Italic;\f1\fnil\fcharset0 Menlo-Bold;\f2\fnil\fcharset0 Menlo-Regular;
+}
+{\colortbl;\red255\green255\blue255;\red109\green109\blue109;\red0\green0\blue109;\red14\green110\blue109;
+\red82\green0\blue135;\red0\green0\blue254;}
+{\*\expandedcolortbl;;\csgenericrgb\c42745\c42745\c42745;\csgenericrgb\c0\c0\c42745;\csgenericrgb\c5490\c43137\c42745;
+\csgenericrgb\c32157\c0\c52941;\csgenericrgb\c0\c0\c99608;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\i\fs26 \cf2 """\uc0\u8232 Henry Ang\u8232 CSC 4800 Advanced Python\u8232 1/26/17\u8232 Lab 4 - RegEx: Stock Quote XML\u8232 \u8232 This program acesses the yahoo finance website to obtain the latest stock price information\u8232 about one or more stock symbols.\u8232 """\u8232 \u8232 
+\f1\i0\b \cf3 import 
+\f2\b0 \cf0 urllib.request, re, sys\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 ProcessQuotes(strSyms, sym):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Process a stock quote yahoo finance website and prints out in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  strSyms:\uc0\u8232     
+\f1\i0\b :param
+\f0\i\b0  sym:     User input of stock symbol\uc0\u8232     """\u8232     
+\f2\i0 \cf0 strUrl=
+\f1\b \cf4 'http://finance.yahoo.com/d/quotes.csv?f=sd1t1l1bawmc1vj2&e=.csv'\uc0\u8232     
+\f2\b0 \cf0 strUrl = strUrl + strSyms\uc0\u8232     
+\f1\b \cf3 try
+\f2\b0 \cf0 :\uc0\u8232         f = urllib.request.urlopen(strUrl)\u8232 \u8232     
+\f1\b \cf3 except
+\f2\b0 \cf0 :\uc0\u8232         
+\f0\i \cf2 # catch the expection if cant read url\uc0\u8232         
+\f2\i0 \cf3 print\cf0 (
+\f1\b \cf4 "URL access failed:\cf3 \\n\cf4 " 
+\f2\b0 \cf0 + strUrl)\uc0\u8232         
+\f1\b \cf3 return\uc0\u8232 \u8232     for 
+\f2\b0 \cf0 line 
+\f1\b \cf3 in 
+\f2\b0 \cf0 f.readlines():\uc0\u8232         line = line.decode().strip();       
+\f0\i \cf2 # convert byte array to string\uc0\u8232         
+\f2\i0 \cf3 print\cf0 (line, 
+\f1\b \cf4 '\cf3 \\n\cf4 '
+\f2\b0 \cf0 )\uc0\u8232 \u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 line ==  
+\f1\b \cf4 "\cf3 \\"\cf4 " 
+\f2\b0 \cf0 + sym + 
+\f1\b \cf4 "\cf3 \\"\cf4 " 
+\f2\b0 \cf0 + 
+\f1\b \cf4 ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A"
+\f2\b0 \cf0 :  
+\f0\i \cf2 # if stock symbol is unknown\uc0\u8232         
+\f2\i0 \cf3 print\cf0 (
+\f1\b \cf4 "Unknown symbol: match failed\cf3 \\n\cf4 "
+\f2\b0 \cf0 )\uc0\u8232 \u8232     
+\f1\b \cf3 else
+\f2\b0 \cf0 :\uc0\u8232         
+\f0\i \cf2 # print the stock quote data\uc0\u8232         
+\f2\i0 \cf3 print\cf0 (
+\f1\b \cf4 "<stockquote>"
+\f2\b0 \cf0 )\uc0\u8232         symbol(line)\u8232         date(line)\u8232         time(line)\u8232         lastSalePrice(line)\u8232         bidPrice(line)\u8232         askPrice(line)\u8232         weekLow(line)\u8232         weekHigh(line)\u8232         todayLow(line)\u8232         todayHigh(line)\u8232         netChangePrice(line)\u8232         shareVolumeQty(line)\u8232         totalShares(line)\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "</stockquote>\cf3 \\n\cf4 "
+\f2\b0 \cf0 )\uc0\u8232 \u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 symbol(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote symbol in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #symbol = re.search("[a-zA-z]+", line).group()\u8232     
+\f2\i0 \cf0 symbol = re.match(
+\f1\b \cf4 "[\cf3 \\"\cf4 ][a-zA-z]+[\cf3 \\"\cf4 ]"
+\f2\b0 \cf0 , line).group()\uc0\u8232     symbols = symbol.strip(
+\f1\b \cf4 "\cf3 \\"\cf4 "
+\f2\b0 \cf0 )\uc0\u8232     \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qSymbol>" 
+\f2\b0 \cf0 + symbols + 
+\f1\b \cf4 "</qSymbol>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 date(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote date in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #date = re.search("(\\d+[/]?)+", line).group()\u8232     
+\f2\i0 \cf0 date = re.match(
+\f1\b \cf4 ".*?(\\d+/\\d+/\\d+)"
+\f2\b0 \cf0 , line).group(\cf6 1\cf0 )\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 date 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qDate>" 
+\f2\b0 \cf0 + date + 
+\f1\b \cf4 "</qDate>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 time(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote time in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #time = re.search("(\\d+:\\d\\d[pm|am]+)+", line).group()\u8232     
+\f2\i0 \cf0 time = re.match(
+\f1\b \cf4 ".*?(\\d+:\\d\\d([pm|am]+))"
+\f2\b0 \cf0 , line).group(\cf6 1\cf0 )\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 time 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qTime>" 
+\f2\b0 \cf0 + time + 
+\f1\b \cf4 "</qTime>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 lastSalePrice(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote lastSalePrice in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #lastSalePrice = re.search("(\\d\\d[.]\\d\\d)", line).group()\u8232     
+\f2\i0 \cf0 lastSalePrice = re.match(
+\f1\b \cf4 ".*?(\\d\\d[.]\\d\\d)"
+\f2\b0 \cf0 , line).group(\cf6 1\cf0 )\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 lastSalePrice 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qLastSalePrice>" 
+\f2\b0 \cf0 + lastSalePrice + 
+\f1\b \cf4 "</qLastSalePrice>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 bidPrice(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote bidPrice in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #bidPrice = re.search("(\\d\\d[.]\\d\\d[,])+", line).group()\u8232     
+\f2\i0 \cf0 bidPrice = re.match(
+\f1\b \cf4 "(.*?)(\\d\\d[.]\\d\\d[,])(\\d\\d[.]\\d\\d[,])"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 bidPrice 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, lastSalesPrice, bidPrices = bidPrice.groups()\u8232         bidPricesFinal = bidPrices.strip(
+\f1\b \cf4 ","
+\f2\b0 \cf0 )\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qBidPrice>" 
+\f2\b0 \cf0 + bidPricesFinal + 
+\f1\b \cf4 "</qBidPrice>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 askPrice(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote askPrice in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #askPrice = re.search("(\\d\\d[.]\\d\\d[,])+", line).group(1)\u8232     
+\f2\i0 \cf0 askPrice = re.match(
+\f1\b \cf4 "(.*?)(\\d\\d[.]\\d\\d[,])(\\d\\d[.]\\d\\d[,])(\\d\\d[.]\\d\\d[,])"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 askPrice 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, lastSalesPrice, bidPrices, askPrices = askPrice.groups()\u8232         askingPrice = askPrices.strip(
+\f1\b \cf4 ","
+\f2\b0 \cf0 )\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qAskPrice>" 
+\f2\b0 \cf0 + askingPrice + 
+\f1\b \cf4 "</qAskPrice>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 weekLow(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote symbweekLow in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #weekLow = re.search("(.*?)(\\d\\d[.]\\d\\d[ -])", line).group(1)\u8232     
+\f2\i0 \cf0 weekLow = re.match(
+\f1\b \cf4 "(.*?)(\\d\\d[.]\\d\\d[ -])"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 weekLow 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, weekLows = weekLow.groups()\u8232         weekLowFinal = weekLows.strip(
+\f1\b \cf4 " "
+\f2\b0 \cf0 )\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <q52WeekLow>" 
+\f2\b0 \cf0 + weekLowFinal + 
+\f1\b \cf4 "</q52WeekLow>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 weekHigh(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote weekHigh in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #weekHigh = re.search("(.*?)([- ]\\d\\d[.]\\d\\d)", line).group(1)\u8232     
+\f2\i0 \cf0 weekHigh = re.match(
+\f1\b \cf4 "(.*?)([- ]\\d\\d[.]\\d\\d)"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 weekHigh 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, weekHighs = weekHigh.groups()\u8232         weekHighFinal = weekHighs.strip(
+\f1\b \cf4 " "
+\f2\b0 \cf0 )\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <q52weekHigh>" 
+\f2\b0 \cf0 + weekHighFinal + 
+\f1\b \cf4 "</52WeekHigh>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 todayLow(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote todayLow in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #todayLow = re.search("(\\d\\d[.]\\d\\d)", line).group()\u8232     
+\f2\i0 \cf0 todayLow = re.match(
+\f1\b \cf4 "(.*?)(.*?\\d\\d[.]\\d\\d[ -])+"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 todayLow 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, todayLows = todayLow.groups()\u8232         a, b = todayLows.split(
+\f1\b \cf4 ","
+\f2\b0 \cf0 )\uc0\u8232         todayLowFinal = b.strip(
+\f1\b \cf4 " \cf3 \\"\cf4 "
+\f2\b0 \cf0 )\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qTodaysLow>" 
+\f2\b0 \cf0 + todayLowFinal + 
+\f1\b \cf4 "</qTodaysLow>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 todayHigh(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote todayHigh in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #todayHigh = re.search("(\\d\\d[.]\\d\\d)", line).group()\u8232     
+\f2\i0 \cf0 todayHigh = re.match(
+\f1\b \cf4 "(.*?)(.*?[- ]\\d\\d[.]\\d\\d)+"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 todayHigh 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, todayHighs = todayHigh.groups()\u8232         a, b = todayHighs.split(
+\f1\b \cf4 "-"
+\f2\b0 \cf0 )\uc0\u8232         todayHighFinal = b.strip(
+\f1\b \cf4 " "
+\f2\b0 \cf0 )\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qTodaysHigh>" 
+\f2\b0 \cf0 + todayHighFinal + 
+\f1\b \cf4 "</qTodaysHigh>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 netChangePrice(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote netChangePrice in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #netChangePrice = re.search("([+-]\\d[.]\\d\\d)", line).group()\u8232     
+\f2\i0 \cf0 netChangePrice = re.match(
+\f1\b \cf4 "(.*?)([+-]\\d[.]\\d\\d)"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 netChangePrice 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, netChangePrices = netChangePrice.groups()\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qNetChangePrice>" 
+\f2\b0 \cf0 + netChangePrices + 
+\f1\b \cf4 "</qNetChangePrice>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 shareVolumeQty(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote shareVolumeQty in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #shareVolumeQty = re.search("\\d\{5,10\}", line).group()\u8232     
+\f2\i0 \cf0 shareVolumeQty = re.match(
+\f1\b \cf4 "(.*?)(\\d\{5,9\})"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 shareVolumeQty 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, shareVolumeQtys = shareVolumeQty.groups()\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qShareVolumeQty>" 
+\f2\b0 \cf0 + shareVolumeQtys + 
+\f1\b \cf4 "</qShareVolumeQty>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 totalShares(line):\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Prints the stock quote totalShares in XML format\u8232     
+\f1\i0\b :param
+\f0\i\b0  line:\uc0\u8232     """\u8232     #totalShares = re.search("(\\d\{10\}([, ]*))+", line).group()\u8232     
+\f2\i0 \cf0 totalShares = re.match(
+\f1\b \cf4 "(.*?)(\\d\{10,15\}[, ]*)"
+\f2\b0 \cf0 , line)\uc0\u8232     
+\f1\b \cf3 if 
+\f2\b0 \cf0 totalShares 
+\f1\b \cf3 is None
+\f2\b0 \cf0 :\uc0\u8232         
+\f1\b \cf3 pass\uc0\u8232     else
+\f2\b0 \cf0 :\uc0\u8232         other, totalShareFinal = totalShares.groups()\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "\cf3 \\t\cf4 <qTotalOutstandingSharesQty>" 
+\f2\b0 \cf0 + totalShareFinal + 
+\f1\b \cf4 "</qTotalOutstandingSharesQty>\cf3 \\n\cf4 "
+\f2\b0 \cf0 , \cf5 end\cf0 =
+\f1\b \cf4 ''
+\f2\b0 \cf0 )\uc0\u8232 \u8232 
+\f1\b \cf3 def 
+\f2\b0 \cf0 main():\uc0\u8232     
+\f0\i \cf2 """\uc0\u8232     Main function of the program. Ask user to input stock symbol and calls ProcessQuote\u8232     """\u8232     
+\f1\i0\b \cf3 while True
+\f2\b0 \cf0 :\uc0\u8232         \cf3 print\cf0 (
+\f1\b \cf4 "Enter a Stock Symbol: "
+\f2\b0 \cf0 )\uc0\u8232         sym = sys.stdin.readline().strip()\u8232         
+\f1\b \cf3 if 
+\f2\b0 \cf0 (\cf3 len\cf0 (sym) == \cf6 0\cf0 ):\uc0\u8232             
+\f1\b \cf3 break\uc0\u8232         
+\f2\b0 \cf0 strSyms = 
+\f1\b \cf4 '&s=' 
+\f2\b0 \cf0 + sym\uc0\u8232         ProcessQuotes(strSyms, sym)\u8232 \u8232 
+\f1\b \cf3 if 
+\f2\b0 \cf0 __name__ == 
+\f1\b \cf4 "__main__"
+\f2\b0 \cf0 :\uc0\u8232     main()\u8232 \
+}
